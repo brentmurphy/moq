@@ -37,19 +37,8 @@ type TransientMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// DoSomething holds details about calls to the DoSomething method.
-		DoSomething []struct {
-			// Zero is the zero argument value.
-			Zero testpackagestransientimportonev1.Zero
-			// One is the one argument value.
-			One transientimportonev1.One
-			// Two is the two argument value.
-			Two twoappv1.Two
-			// Three is the three argument value.
-			Three threev1.Three
-			// Four is the four argument value.
-			Four fourappv1.Four
-		}
+		// TransientMockDoSomethingCall holds details about calls to the DoSomething method.
+		DoSomething []TransientMockDoSomethingCall
 	}
 	lockDoSomething sync.RWMutex
 }
@@ -59,13 +48,7 @@ func (mock *TransientMock) DoSomething(zero testpackagestransientimportonev1.Zer
 	if mock.DoSomethingFunc == nil {
 		panic("TransientMock.DoSomethingFunc: method is nil but Transient.DoSomething was just called")
 	}
-	callInfo := struct {
-		Zero  testpackagestransientimportonev1.Zero
-		One   transientimportonev1.One
-		Two   twoappv1.Two
-		Three threev1.Three
-		Four  fourappv1.Four
-	}{
+	callInfo := TransientMockDoSomethingCall{
 		Zero:  zero,
 		One:   one,
 		Two:   two,
@@ -78,24 +61,26 @@ func (mock *TransientMock) DoSomething(zero testpackagestransientimportonev1.Zer
 	mock.DoSomethingFunc(zero, one, two, three, four)
 }
 
+// TransientMockDoSomethingCall holds details about calls to the DoSomething method.
+type TransientMockDoSomethingCall struct {
+	// Zero is the zero argument value.
+	Zero testpackagestransientimportonev1.Zero
+	// One is the one argument value.
+	One transientimportonev1.One
+	// Two is the two argument value.
+	Two twoappv1.Two
+	// Three is the three argument value.
+	Three threev1.Three
+	// Four is the four argument value.
+	Four fourappv1.Four
+}
+
 // DoSomethingCalls gets all the calls that were made to DoSomething.
 // Check the length with:
 //
 //	len(mockedTransient.DoSomethingCalls())
-func (mock *TransientMock) DoSomethingCalls() []struct {
-	Zero  testpackagestransientimportonev1.Zero
-	One   transientimportonev1.One
-	Two   twoappv1.Two
-	Three threev1.Three
-	Four  fourappv1.Four
-} {
-	var calls []struct {
-		Zero  testpackagestransientimportonev1.Zero
-		One   transientimportonev1.One
-		Two   twoappv1.Two
-		Three threev1.Three
-		Four  fourappv1.Four
-	}
+func (mock *TransientMock) DoSomethingCalls() []TransientMockDoSomethingCall {
+	var calls []TransientMockDoSomethingCall
 	mock.lockDoSomething.RLock()
 	calls = mock.calls.DoSomething
 	mock.lockDoSomething.RUnlock()

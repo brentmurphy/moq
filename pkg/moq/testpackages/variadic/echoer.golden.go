@@ -32,11 +32,8 @@ type EchoerMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Echo holds details about calls to the Echo method.
-		Echo []struct {
-			// Ss is the ss argument value.
-			Ss []string
-		}
+		// EchoerMockEchoCall holds details about calls to the Echo method.
+		Echo []EchoerMockEchoCall
 	}
 	lockEcho sync.RWMutex
 }
@@ -46,9 +43,7 @@ func (mock *EchoerMock) Echo(ss ...string) []string {
 	if mock.EchoFunc == nil {
 		panic("EchoerMock.EchoFunc: method is nil but Echoer.Echo was just called")
 	}
-	callInfo := struct {
-		Ss []string
-	}{
+	callInfo := EchoerMockEchoCall{
 		Ss: ss,
 	}
 	mock.lockEcho.Lock()
@@ -57,16 +52,18 @@ func (mock *EchoerMock) Echo(ss ...string) []string {
 	return mock.EchoFunc(ss...)
 }
 
+// EchoerMockEchoCall holds details about calls to the Echo method.
+type EchoerMockEchoCall struct {
+	// Ss is the ss argument value.
+	Ss []string
+}
+
 // EchoCalls gets all the calls that were made to Echo.
 // Check the length with:
 //
 //	len(mockedEchoer.EchoCalls())
-func (mock *EchoerMock) EchoCalls() []struct {
-	Ss []string
-} {
-	var calls []struct {
-		Ss []string
-	}
+func (mock *EchoerMock) EchoCalls() []EchoerMockEchoCall {
+	var calls []EchoerMockEchoCall
 	mock.lockEcho.RLock()
 	calls = mock.calls.Echo
 	mock.lockEcho.RUnlock()

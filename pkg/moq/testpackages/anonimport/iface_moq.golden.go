@@ -33,11 +33,8 @@ type ExampleMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Ctx holds details about calls to the Ctx method.
-		Ctx []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-		}
+		// ExampleMockCtxCall holds details about calls to the Ctx method.
+		Ctx []ExampleMockCtxCall
 	}
 	lockCtx sync.RWMutex
 }
@@ -47,9 +44,7 @@ func (mock *ExampleMock) Ctx(ctx context.Context) {
 	if mock.CtxFunc == nil {
 		panic("ExampleMock.CtxFunc: method is nil but Example.Ctx was just called")
 	}
-	callInfo := struct {
-		Ctx context.Context
-	}{
+	callInfo := ExampleMockCtxCall{
 		Ctx: ctx,
 	}
 	mock.lockCtx.Lock()
@@ -58,16 +53,18 @@ func (mock *ExampleMock) Ctx(ctx context.Context) {
 	mock.CtxFunc(ctx)
 }
 
+// ExampleMockCtxCall holds details about calls to the Ctx method.
+type ExampleMockCtxCall struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+}
+
 // CtxCalls gets all the calls that were made to Ctx.
 // Check the length with:
 //
 //	len(mockedExample.CtxCalls())
-func (mock *ExampleMock) CtxCalls() []struct {
-	Ctx context.Context
-} {
-	var calls []struct {
-		Ctx context.Context
-	}
+func (mock *ExampleMock) CtxCalls() []ExampleMockCtxCall {
+	var calls []ExampleMockCtxCall
 	mock.lockCtx.RLock()
 	calls = mock.calls.Ctx
 	mock.lockCtx.RUnlock()

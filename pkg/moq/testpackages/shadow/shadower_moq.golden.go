@@ -46,25 +46,12 @@ type ShadowerMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Shadow holds details about calls to the Shadow method.
-		Shadow []struct {
-			// IoMoqParam is the ioMoqParam argument value.
-			IoMoqParam io.Reader
-		}
-		// ShadowThree holds details about calls to the ShadowThree method.
-		ShadowThree []struct {
-			// HttpMoqParam is the httpMoqParam argument value.
-			HttpMoqParam interface{}
-			// Srv is the srv argument value.
-			Srv *http.Server
-		}
-		// ShadowTwo holds details about calls to the ShadowTwo method.
-		ShadowTwo []struct {
-			// R is the r argument value.
-			R io.Reader
-			// IoMoqParam is the ioMoqParam argument value.
-			IoMoqParam interface{}
-		}
+		// ShadowerMockShadowCall holds details about calls to the Shadow method.
+		Shadow []ShadowerMockShadowCall
+		// ShadowerMockShadowThreeCall holds details about calls to the ShadowThree method.
+		ShadowThree []ShadowerMockShadowThreeCall
+		// ShadowerMockShadowTwoCall holds details about calls to the ShadowTwo method.
+		ShadowTwo []ShadowerMockShadowTwoCall
 	}
 	lockShadow      sync.RWMutex
 	lockShadowThree sync.RWMutex
@@ -76,9 +63,7 @@ func (mock *ShadowerMock) Shadow(ioMoqParam io.Reader) {
 	if mock.ShadowFunc == nil {
 		panic("ShadowerMock.ShadowFunc: method is nil but Shadower.Shadow was just called")
 	}
-	callInfo := struct {
-		IoMoqParam io.Reader
-	}{
+	callInfo := ShadowerMockShadowCall{
 		IoMoqParam: ioMoqParam,
 	}
 	mock.lockShadow.Lock()
@@ -87,16 +72,18 @@ func (mock *ShadowerMock) Shadow(ioMoqParam io.Reader) {
 	mock.ShadowFunc(ioMoqParam)
 }
 
+// ShadowerMockShadowCall holds details about calls to the Shadow method.
+type ShadowerMockShadowCall struct {
+	// IoMoqParam is the ioMoqParam argument value.
+	IoMoqParam io.Reader
+}
+
 // ShadowCalls gets all the calls that were made to Shadow.
 // Check the length with:
 //
 //	len(mockedShadower.ShadowCalls())
-func (mock *ShadowerMock) ShadowCalls() []struct {
-	IoMoqParam io.Reader
-} {
-	var calls []struct {
-		IoMoqParam io.Reader
-	}
+func (mock *ShadowerMock) ShadowCalls() []ShadowerMockShadowCall {
+	var calls []ShadowerMockShadowCall
 	mock.lockShadow.RLock()
 	calls = mock.calls.Shadow
 	mock.lockShadow.RUnlock()
@@ -108,10 +95,7 @@ func (mock *ShadowerMock) ShadowThree(httpMoqParam interface{}, srv *http.Server
 	if mock.ShadowThreeFunc == nil {
 		panic("ShadowerMock.ShadowThreeFunc: method is nil but Shadower.ShadowThree was just called")
 	}
-	callInfo := struct {
-		HttpMoqParam interface{}
-		Srv          *http.Server
-	}{
+	callInfo := ShadowerMockShadowThreeCall{
 		HttpMoqParam: httpMoqParam,
 		Srv:          srv,
 	}
@@ -121,18 +105,20 @@ func (mock *ShadowerMock) ShadowThree(httpMoqParam interface{}, srv *http.Server
 	mock.ShadowThreeFunc(httpMoqParam, srv)
 }
 
+// ShadowerMockShadowThreeCall holds details about calls to the ShadowThree method.
+type ShadowerMockShadowThreeCall struct {
+	// HttpMoqParam is the httpMoqParam argument value.
+	HttpMoqParam interface{}
+	// Srv is the srv argument value.
+	Srv *http.Server
+}
+
 // ShadowThreeCalls gets all the calls that were made to ShadowThree.
 // Check the length with:
 //
 //	len(mockedShadower.ShadowThreeCalls())
-func (mock *ShadowerMock) ShadowThreeCalls() []struct {
-	HttpMoqParam interface{}
-	Srv          *http.Server
-} {
-	var calls []struct {
-		HttpMoqParam interface{}
-		Srv          *http.Server
-	}
+func (mock *ShadowerMock) ShadowThreeCalls() []ShadowerMockShadowThreeCall {
+	var calls []ShadowerMockShadowThreeCall
 	mock.lockShadowThree.RLock()
 	calls = mock.calls.ShadowThree
 	mock.lockShadowThree.RUnlock()
@@ -144,10 +130,7 @@ func (mock *ShadowerMock) ShadowTwo(r io.Reader, ioMoqParam interface{}) {
 	if mock.ShadowTwoFunc == nil {
 		panic("ShadowerMock.ShadowTwoFunc: method is nil but Shadower.ShadowTwo was just called")
 	}
-	callInfo := struct {
-		R          io.Reader
-		IoMoqParam interface{}
-	}{
+	callInfo := ShadowerMockShadowTwoCall{
 		R:          r,
 		IoMoqParam: ioMoqParam,
 	}
@@ -157,18 +140,20 @@ func (mock *ShadowerMock) ShadowTwo(r io.Reader, ioMoqParam interface{}) {
 	mock.ShadowTwoFunc(r, ioMoqParam)
 }
 
+// ShadowerMockShadowTwoCall holds details about calls to the ShadowTwo method.
+type ShadowerMockShadowTwoCall struct {
+	// R is the r argument value.
+	R io.Reader
+	// IoMoqParam is the ioMoqParam argument value.
+	IoMoqParam interface{}
+}
+
 // ShadowTwoCalls gets all the calls that were made to ShadowTwo.
 // Check the length with:
 //
 //	len(mockedShadower.ShadowTwoCalls())
-func (mock *ShadowerMock) ShadowTwoCalls() []struct {
-	R          io.Reader
-	IoMoqParam interface{}
-} {
-	var calls []struct {
-		R          io.Reader
-		IoMoqParam interface{}
-	}
+func (mock *ShadowerMock) ShadowTwoCalls() []ShadowerMockShadowTwoCall {
+	var calls []ShadowerMockShadowTwoCall
 	mock.lockShadowTwo.RLock()
 	calls = mock.calls.ShadowTwo
 	mock.lockShadowTwo.RUnlock()

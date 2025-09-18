@@ -45,27 +45,12 @@ type ResetStoreMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// ClearCache holds details about calls to the ClearCache method.
-		ClearCache []struct {
-			// ID is the id argument value.
-			ID string
-		}
-		// Create holds details about calls to the Create method.
-		Create []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// Person is the person argument value.
-			Person *Reset
-			// Confirm is the confirm argument value.
-			Confirm bool
-		}
-		// Get holds details about calls to the Get method.
-		Get []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID string
-		}
+		// ResetStoreMockClearCacheCall holds details about calls to the ClearCache method.
+		ClearCache []ResetStoreMockClearCacheCall
+		// ResetStoreMockCreateCall holds details about calls to the Create method.
+		Create []ResetStoreMockCreateCall
+		// ResetStoreMockGetCall holds details about calls to the Get method.
+		Get []ResetStoreMockGetCall
 	}
 	lockClearCache sync.RWMutex
 	lockCreate     sync.RWMutex
@@ -77,9 +62,7 @@ func (mock *ResetStoreMock) ClearCache(id string) {
 	if mock.ClearCacheFunc == nil {
 		panic("ResetStoreMock.ClearCacheFunc: method is nil but ResetStore.ClearCache was just called")
 	}
-	callInfo := struct {
-		ID string
-	}{
+	callInfo := ResetStoreMockClearCacheCall{
 		ID: id,
 	}
 	mock.lockClearCache.Lock()
@@ -88,16 +71,18 @@ func (mock *ResetStoreMock) ClearCache(id string) {
 	mock.ClearCacheFunc(id)
 }
 
+// ResetStoreMockClearCacheCall holds details about calls to the ClearCache method.
+type ResetStoreMockClearCacheCall struct {
+	// ID is the id argument value.
+	ID string
+}
+
 // ClearCacheCalls gets all the calls that were made to ClearCache.
 // Check the length with:
 //
 //	len(mockedResetStore.ClearCacheCalls())
-func (mock *ResetStoreMock) ClearCacheCalls() []struct {
-	ID string
-} {
-	var calls []struct {
-		ID string
-	}
+func (mock *ResetStoreMock) ClearCacheCalls() []ResetStoreMockClearCacheCall {
+	var calls []ResetStoreMockClearCacheCall
 	mock.lockClearCache.RLock()
 	calls = mock.calls.ClearCache
 	mock.lockClearCache.RUnlock()
@@ -116,11 +101,7 @@ func (mock *ResetStoreMock) Create(ctx context.Context, person *Reset, confirm b
 	if mock.CreateFunc == nil {
 		panic("ResetStoreMock.CreateFunc: method is nil but ResetStore.Create was just called")
 	}
-	callInfo := struct {
-		Ctx     context.Context
-		Person  *Reset
-		Confirm bool
-	}{
+	callInfo := ResetStoreMockCreateCall{
 		Ctx:     ctx,
 		Person:  person,
 		Confirm: confirm,
@@ -131,20 +112,22 @@ func (mock *ResetStoreMock) Create(ctx context.Context, person *Reset, confirm b
 	return mock.CreateFunc(ctx, person, confirm)
 }
 
+// ResetStoreMockCreateCall holds details about calls to the Create method.
+type ResetStoreMockCreateCall struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// Person is the person argument value.
+	Person *Reset
+	// Confirm is the confirm argument value.
+	Confirm bool
+}
+
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
 //
 //	len(mockedResetStore.CreateCalls())
-func (mock *ResetStoreMock) CreateCalls() []struct {
-	Ctx     context.Context
-	Person  *Reset
-	Confirm bool
-} {
-	var calls []struct {
-		Ctx     context.Context
-		Person  *Reset
-		Confirm bool
-	}
+func (mock *ResetStoreMock) CreateCalls() []ResetStoreMockCreateCall {
+	var calls []ResetStoreMockCreateCall
 	mock.lockCreate.RLock()
 	calls = mock.calls.Create
 	mock.lockCreate.RUnlock()
@@ -163,10 +146,7 @@ func (mock *ResetStoreMock) Get(ctx context.Context, id string) (*Reset, error) 
 	if mock.GetFunc == nil {
 		panic("ResetStoreMock.GetFunc: method is nil but ResetStore.Get was just called")
 	}
-	callInfo := struct {
-		Ctx context.Context
-		ID  string
-	}{
+	callInfo := ResetStoreMockGetCall{
 		Ctx: ctx,
 		ID:  id,
 	}
@@ -176,18 +156,20 @@ func (mock *ResetStoreMock) Get(ctx context.Context, id string) (*Reset, error) 
 	return mock.GetFunc(ctx, id)
 }
 
+// ResetStoreMockGetCall holds details about calls to the Get method.
+type ResetStoreMockGetCall struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID string
+}
+
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
 //
 //	len(mockedResetStore.GetCalls())
-func (mock *ResetStoreMock) GetCalls() []struct {
-	Ctx context.Context
-	ID  string
-} {
-	var calls []struct {
-		Ctx context.Context
-		ID  string
-	}
+func (mock *ResetStoreMock) GetCalls() []ResetStoreMockGetCall {
+	var calls []ResetStoreMockGetCall
 	mock.lockGet.RLock()
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()
@@ -247,22 +229,10 @@ type ResetStoreGenericMock[T any, S any] struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Create holds details about calls to the Create method.
-		Create []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID T
-			// Value is the value argument value.
-			Value S
-		}
-		// Get holds details about calls to the Get method.
-		Get []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID T
-		}
+		// ResetStoreGenericMockCreateCall holds details about calls to the Create method.
+		Create []ResetStoreGenericMockCreateCall[T, S]
+		// ResetStoreGenericMockGetCall holds details about calls to the Get method.
+		Get []ResetStoreGenericMockGetCall[T, S]
 	}
 	lockCreate sync.RWMutex
 	lockGet    sync.RWMutex
@@ -273,11 +243,7 @@ func (mock *ResetStoreGenericMock[T, S]) Create(ctx context.Context, id T, value
 	if mock.CreateFunc == nil {
 		panic("ResetStoreGenericMock.CreateFunc: method is nil but ResetStoreGeneric.Create was just called")
 	}
-	callInfo := struct {
-		Ctx   context.Context
-		ID    T
-		Value S
-	}{
+	callInfo := ResetStoreGenericMockCreateCall[T, S]{
 		Ctx:   ctx,
 		ID:    id,
 		Value: value,
@@ -288,20 +254,22 @@ func (mock *ResetStoreGenericMock[T, S]) Create(ctx context.Context, id T, value
 	return mock.CreateFunc(ctx, id, value)
 }
 
+// ResetStoreGenericMockCreateCall holds details about calls to the Create method.
+type ResetStoreGenericMockCreateCall[T any, S any] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID T
+	// Value is the value argument value.
+	Value S
+}
+
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
 //
 //	len(mockedResetStoreGeneric.CreateCalls())
-func (mock *ResetStoreGenericMock[T, S]) CreateCalls() []struct {
-	Ctx   context.Context
-	ID    T
-	Value S
-} {
-	var calls []struct {
-		Ctx   context.Context
-		ID    T
-		Value S
-	}
+func (mock *ResetStoreGenericMock[T, S]) CreateCalls() []ResetStoreGenericMockCreateCall[T, S] {
+	var calls []ResetStoreGenericMockCreateCall[T, S]
 	mock.lockCreate.RLock()
 	calls = mock.calls.Create
 	mock.lockCreate.RUnlock()
@@ -320,10 +288,7 @@ func (mock *ResetStoreGenericMock[T, S]) Get(ctx context.Context, id T) (string,
 	if mock.GetFunc == nil {
 		panic("ResetStoreGenericMock.GetFunc: method is nil but ResetStoreGeneric.Get was just called")
 	}
-	callInfo := struct {
-		Ctx context.Context
-		ID  T
-	}{
+	callInfo := ResetStoreGenericMockGetCall[T, S]{
 		Ctx: ctx,
 		ID:  id,
 	}
@@ -333,18 +298,20 @@ func (mock *ResetStoreGenericMock[T, S]) Get(ctx context.Context, id T) (string,
 	return mock.GetFunc(ctx, id)
 }
 
+// ResetStoreGenericMockGetCall holds details about calls to the Get method.
+type ResetStoreGenericMockGetCall[T any, S any] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID T
+}
+
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
 //
 //	len(mockedResetStoreGeneric.GetCalls())
-func (mock *ResetStoreGenericMock[T, S]) GetCalls() []struct {
-	Ctx context.Context
-	ID  T
-} {
-	var calls []struct {
-		Ctx context.Context
-		ID  T
-	}
+func (mock *ResetStoreGenericMock[T, S]) GetCalls() []ResetStoreGenericMockGetCall[T, S] {
+	var calls []ResetStoreGenericMockGetCall[T, S]
 	mock.lockGet.RLock()
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()

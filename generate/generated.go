@@ -4,55 +4,53 @@
 package generate
 
 import (
+	"context"
 	"sync"
 )
 
 // Ensure, that MyInterfaceMock does implement MyInterface.
 // If this is not the case, regenerate this file with moq.
-var _ MyInterface = &MyInterfaceMock{}
+var _ MyInterface[int, string, float64] = &MyInterfaceMock[int, string, float64]{}
 
 // MyInterfaceMock is a mock implementation of MyInterface.
 //
-// 	func TestSomethingThatUsesMyInterface(t *testing.T) {
+//	func TestSomethingThatUsesMyInterface(t *testing.T) {
 //
-// 		// make and configure a mocked MyInterface
-// 		mockedMyInterface := &MyInterfaceMock{
-// 			OneFunc: func() bool {
-// 				panic("mock out the One method")
-// 			},
-// 			ThreeFunc: func() string {
-// 				panic("mock out the Three method")
-// 			},
-// 			TwoFunc: func() int {
-// 				panic("mock out the Two method")
-// 			},
-// 		}
+//		// make and configure a mocked MyInterface
+//		mockedMyInterface := &MyInterfaceMock{
+//			OneFunc: func(ctx context.Context, in A) bool {
+//				panic("mock out the One method")
+//			},
+//			ThreeFunc: func(count int) C {
+//				panic("mock out the Three method")
+//			},
+//			TwoFunc: func(id string, in B) string {
+//				panic("mock out the Two method")
+//			},
+//		}
 //
-// 		// use mockedMyInterface in code that requires MyInterface
-// 		// and then make assertions.
+//		// use mockedMyInterface in code that requires MyInterface
+//		// and then make assertions.
 //
-// 	}
-type MyInterfaceMock struct {
+//	}
+type MyInterfaceMock[A ~int, B ~string, C ~float64] struct {
 	// OneFunc mocks the One method.
-	OneFunc func() bool
+	OneFunc func(ctx context.Context, in A) bool
 
 	// ThreeFunc mocks the Three method.
-	ThreeFunc func() string
+	ThreeFunc func(count int) C
 
 	// TwoFunc mocks the Two method.
-	TwoFunc func() int
+	TwoFunc func(id string, in B) string
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// One holds details about calls to the One method.
-		One []struct {
-		}
-		// Three holds details about calls to the Three method.
-		Three []struct {
-		}
-		// Two holds details about calls to the Two method.
-		Two []struct {
-		}
+		// MyInterfaceMockOneCall holds details about calls to the One method.
+		One []MyInterfaceMockOneCall[A, B, C]
+		// MyInterfaceMockThreeCall holds details about calls to the Three method.
+		Three []MyInterfaceMockThreeCall[A, B, C]
+		// MyInterfaceMockTwoCall holds details about calls to the Two method.
+		Two []MyInterfaceMockTwoCall[A, B, C]
 	}
 	lockOne   sync.RWMutex
 	lockThree sync.RWMutex
@@ -60,25 +58,34 @@ type MyInterfaceMock struct {
 }
 
 // One calls OneFunc.
-func (mock *MyInterfaceMock) One() bool {
+func (mock *MyInterfaceMock[A, B, C]) One(ctx context.Context, in A) bool {
 	if mock.OneFunc == nil {
 		panic("MyInterfaceMock.OneFunc: method is nil but MyInterface.One was just called")
 	}
-	callInfo := struct {
-	}{}
+	callInfo := MyInterfaceMockOneCall[A, B, C]{
+		Ctx: ctx,
+		In:  in,
+	}
 	mock.lockOne.Lock()
 	mock.calls.One = append(mock.calls.One, callInfo)
 	mock.lockOne.Unlock()
-	return mock.OneFunc()
+	return mock.OneFunc(ctx, in)
+}
+
+// MyInterfaceMockOneCall holds details about calls to the One method.
+type MyInterfaceMockOneCall[A ~int, B ~string, C ~float64] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// In is the in argument value.
+	In A
 }
 
 // OneCalls gets all the calls that were made to One.
 // Check the length with:
-//     len(mockedMyInterface.OneCalls())
-func (mock *MyInterfaceMock) OneCalls() []struct {
-} {
-	var calls []struct {
-	}
+//
+//	len(mockedMyInterface.OneCalls())
+func (mock *MyInterfaceMock[A, B, C]) OneCalls() []MyInterfaceMockOneCall[A, B, C] {
+	var calls []MyInterfaceMockOneCall[A, B, C]
 	mock.lockOne.RLock()
 	calls = mock.calls.One
 	mock.lockOne.RUnlock()
@@ -86,25 +93,31 @@ func (mock *MyInterfaceMock) OneCalls() []struct {
 }
 
 // Three calls ThreeFunc.
-func (mock *MyInterfaceMock) Three() string {
+func (mock *MyInterfaceMock[A, B, C]) Three(count int) C {
 	if mock.ThreeFunc == nil {
 		panic("MyInterfaceMock.ThreeFunc: method is nil but MyInterface.Three was just called")
 	}
-	callInfo := struct {
-	}{}
+	callInfo := MyInterfaceMockThreeCall[A, B, C]{
+		Count: count,
+	}
 	mock.lockThree.Lock()
 	mock.calls.Three = append(mock.calls.Three, callInfo)
 	mock.lockThree.Unlock()
-	return mock.ThreeFunc()
+	return mock.ThreeFunc(count)
+}
+
+// MyInterfaceMockThreeCall holds details about calls to the Three method.
+type MyInterfaceMockThreeCall[A ~int, B ~string, C ~float64] struct {
+	// Count is the count argument value.
+	Count int
 }
 
 // ThreeCalls gets all the calls that were made to Three.
 // Check the length with:
-//     len(mockedMyInterface.ThreeCalls())
-func (mock *MyInterfaceMock) ThreeCalls() []struct {
-} {
-	var calls []struct {
-	}
+//
+//	len(mockedMyInterface.ThreeCalls())
+func (mock *MyInterfaceMock[A, B, C]) ThreeCalls() []MyInterfaceMockThreeCall[A, B, C] {
+	var calls []MyInterfaceMockThreeCall[A, B, C]
 	mock.lockThree.RLock()
 	calls = mock.calls.Three
 	mock.lockThree.RUnlock()
@@ -112,25 +125,34 @@ func (mock *MyInterfaceMock) ThreeCalls() []struct {
 }
 
 // Two calls TwoFunc.
-func (mock *MyInterfaceMock) Two() int {
+func (mock *MyInterfaceMock[A, B, C]) Two(id string, in B) string {
 	if mock.TwoFunc == nil {
 		panic("MyInterfaceMock.TwoFunc: method is nil but MyInterface.Two was just called")
 	}
-	callInfo := struct {
-	}{}
+	callInfo := MyInterfaceMockTwoCall[A, B, C]{
+		ID: id,
+		In: in,
+	}
 	mock.lockTwo.Lock()
 	mock.calls.Two = append(mock.calls.Two, callInfo)
 	mock.lockTwo.Unlock()
-	return mock.TwoFunc()
+	return mock.TwoFunc(id, in)
+}
+
+// MyInterfaceMockTwoCall holds details about calls to the Two method.
+type MyInterfaceMockTwoCall[A ~int, B ~string, C ~float64] struct {
+	// ID is the id argument value.
+	ID string
+	// In is the in argument value.
+	In B
 }
 
 // TwoCalls gets all the calls that were made to Two.
 // Check the length with:
-//     len(mockedMyInterface.TwoCalls())
-func (mock *MyInterfaceMock) TwoCalls() []struct {
-} {
-	var calls []struct {
-	}
+//
+//	len(mockedMyInterface.TwoCalls())
+func (mock *MyInterfaceMock[A, B, C]) TwoCalls() []MyInterfaceMockTwoCall[A, B, C] {
+	var calls []MyInterfaceMockTwoCall[A, B, C]
 	mock.lockTwo.RLock()
 	calls = mock.calls.Two
 	mock.lockTwo.RUnlock()

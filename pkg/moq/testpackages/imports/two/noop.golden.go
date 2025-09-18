@@ -39,16 +39,10 @@ type noopMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Another holds details about calls to the Another method.
-		Another []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
-		// Do holds details about calls to the Do method.
-		Do []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		// noopMockAnotherCall holds details about calls to the Another method.
+		Another []noopMockAnotherCall
+		// noopMockDoCall holds details about calls to the Do method.
+		Do []noopMockDoCall
 	}
 	lockAnother sync.RWMutex
 	lockDo sync.RWMutex
@@ -59,9 +53,7 @@ func (mock *noopMock) Another(thing one.Thing) error {
 	if mock.AnotherFunc == nil {
 		panic("noopMock.AnotherFunc: method is nil but DoSomething.Another was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := noopMockAnotherCall{
 		Thing: thing,
 	}
 	mock.lockAnother.Lock()
@@ -70,16 +62,18 @@ func (mock *noopMock) Another(thing one.Thing) error {
 	return mock.AnotherFunc(thing)
 }
 
+// noopMockAnotherCall holds details about calls to the Another method.
+type noopMockAnotherCall struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
+}
+
 // AnotherCalls gets all the calls that were made to Another.
 // Check the length with:
 //
 //	len(mockedDoSomething.AnotherCalls())
-func (mock *noopMock) AnotherCalls() []struct {
-		Thing one.Thing
-	} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *noopMock) AnotherCalls() []noopMockAnotherCall {
+	var calls []noopMockAnotherCall
 	mock.lockAnother.RLock()
 	calls = mock.calls.Another
 	mock.lockAnother.RUnlock()
@@ -91,9 +85,7 @@ func (mock *noopMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
 		panic("noopMock.DoFunc: method is nil but DoSomething.Do was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := noopMockDoCall{
 		Thing: thing,
 	}
 	mock.lockDo.Lock()
@@ -102,16 +94,18 @@ func (mock *noopMock) Do(thing one.Thing) error {
 	return mock.DoFunc(thing)
 }
 
+// noopMockDoCall holds details about calls to the Do method.
+type noopMockDoCall struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
+}
+
 // DoCalls gets all the calls that were made to Do.
 // Check the length with:
 //
 //	len(mockedDoSomething.DoCalls())
-func (mock *noopMock) DoCalls() []struct {
-		Thing one.Thing
-	} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *noopMock) DoCalls() []noopMockDoCall {
+	var calls []noopMockDoCall
 	mock.lockDo.RLock()
 	calls = mock.calls.Do
 	mock.lockDo.RUnlock()
