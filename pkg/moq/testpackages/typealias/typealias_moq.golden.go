@@ -33,13 +33,8 @@ type ExampleMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Do holds details about calls to the Do method.
-		Do []struct {
-			// A is the a argument value.
-			A typealiastwo.AliasType
-			// B is the b argument value.
-			B typealiastwo.GenericAliasType
-		}
+		// ExampleMockDoCall holds details about calls to the Do method.
+		Do []ExampleMockDoCall
 	}
 	lockDo sync.RWMutex
 }
@@ -49,10 +44,7 @@ func (mock *ExampleMock) Do(a typealiastwo.AliasType, b typealiastwo.GenericAlia
 	if mock.DoFunc == nil {
 		panic("ExampleMock.DoFunc: method is nil but Example.Do was just called")
 	}
-	callInfo := struct {
-		A typealiastwo.AliasType
-		B typealiastwo.GenericAliasType
-	}{
+	callInfo := ExampleMockDoCall{
 		A: a,
 		B: b,
 	}
@@ -62,18 +54,20 @@ func (mock *ExampleMock) Do(a typealiastwo.AliasType, b typealiastwo.GenericAlia
 	return mock.DoFunc(a, b)
 }
 
+// ExampleMockDoCall holds details about calls to the Do method.
+type ExampleMockDoCall struct {
+	// A is the a argument value.
+	A typealiastwo.AliasType
+	// B is the b argument value.
+	B typealiastwo.GenericAliasType
+}
+
 // DoCalls gets all the calls that were made to Do.
 // Check the length with:
 //
 //	len(mockedExample.DoCalls())
-func (mock *ExampleMock) DoCalls() []struct {
-	A typealiastwo.AliasType
-	B typealiastwo.GenericAliasType
-} {
-	var calls []struct {
-		A typealiastwo.AliasType
-		B typealiastwo.GenericAliasType
-	}
+func (mock *ExampleMock) DoCalls() []ExampleMockDoCall {
+	var calls []ExampleMockDoCall
 	mock.lockDo.RLock()
 	calls = mock.calls.Do
 	mock.lockDo.RUnlock()

@@ -32,9 +32,8 @@ type MagicianMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// DoMagic holds details about calls to the DoMagic method.
-		DoMagic []struct {
-		}
+		// MagicianMockDoMagicCall holds details about calls to the DoMagic method.
+		DoMagic []MagicianMockDoMagicCall
 	}
 	lockDoMagic sync.RWMutex
 }
@@ -44,22 +43,23 @@ func (mock *MagicianMock) DoMagic() {
 	if mock.DoMagicFunc == nil {
 		panic("MagicianMock.DoMagicFunc: method is nil but Magician.DoMagic was just called")
 	}
-	callInfo := struct {
-	}{}
+	callInfo := MagicianMockDoMagicCall{}
 	mock.lockDoMagic.Lock()
 	mock.calls.DoMagic = append(mock.calls.DoMagic, callInfo)
 	mock.lockDoMagic.Unlock()
 	mock.DoMagicFunc()
 }
 
+// MagicianMockDoMagicCall holds details about calls to the DoMagic method.
+type MagicianMockDoMagicCall struct {
+}
+
 // DoMagicCalls gets all the calls that were made to DoMagic.
 // Check the length with:
 //
 //	len(mockedMagician.DoMagicCalls())
-func (mock *MagicianMock) DoMagicCalls() []struct {
-} {
-	var calls []struct {
-	}
+func (mock *MagicianMock) DoMagicCalls() []MagicianMockDoMagicCall {
+	var calls []MagicianMockDoMagicCall
 	mock.lockDoMagic.RLock()
 	calls = mock.calls.DoMagic
 	mock.lockDoMagic.RUnlock()

@@ -96,13 +96,12 @@ type {{.MockName}}
 	// calls tracks calls to the methods.
 	calls struct {
 {{- range .Methods}}
-		// {{.Name}} holds details about calls to the {{.Name}} method.
-		{{.Name}} []struct {
-			{{- range .Params}}
-			// {{.Name | Exported}} is the {{.Name}} argument value.
-			{{.Name | Exported}} {{.TypeString}}
-			{{- end}}
-		}
+		// {{$mock.MockName}}{{.Name}}Call holds details about calls to the {{.Name}} method.
+		{{.Name}} []{{$mock.MockName}}{{.Name}}Call{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}
 {{- end}}
 	}
 {{- range .Methods}}
@@ -123,11 +122,11 @@ func (mock *{{$mock.MockName}}
 		panic("{{$mock.MockName}}.{{.Name}}Func: method is nil but {{$mock.InterfaceName}}.{{.Name}} was just called")
 	}
 {{- end}}
-	callInfo := struct {
-		{{- range .Params}}
-		{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-	}{
+	callInfo := {{$mock.MockName}}{{.Name}}Call{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}{
 		{{- range .Params}}
 		{{.Name | Exported}}: {{.Name}},
 		{{- end}}
@@ -157,6 +156,18 @@ func (mock *{{$mock.MockName}}
 {{- end}}
 }
 
+// {{$mock.MockName}}{{.Name}}Call holds details about calls to the {{.Name}} method.
+type {{$mock.MockName}}{{.Name}}Call{{- if $mock.TypeParams -}}
+	[{{- range $index, $param := $mock.TypeParams}}
+			{{- if $index}}, {{end}}{{$param.Name | Exported}} {{$param.TypeString}}
+	{{- end -}}]
+{{- end }} struct {
+	{{- range .Params}}
+	// {{.Name | Exported}} is the {{.Name}} argument value.
+	{{.Name | Exported}} {{.TypeString}}
+	{{- end}}
+}
+
 // {{.Name}}Calls gets all the calls that were made to {{.Name}}.
 // Check the length with:
 //
@@ -167,16 +178,16 @@ func (mock *{{$mock.MockName}}
 		{{- if $index}}, {{end}}{{$param.Name | Exported}}
 	{{- end -}}]
 {{- end -}}
-) {{.Name}}Calls() []struct {
-		{{- range .Params}}
-		{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-	} {
-	var calls []struct {
-		{{- range .Params}}
-		{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-	}
+) {{.Name}}Calls() []{{$mock.MockName}}{{.Name}}Call{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }} {
+	var calls []{{$mock.MockName}}{{.Name}}Call{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}
 	mock.lock{{.Name}}.RLock()
 	calls = mock.calls.{{.Name}}
 	mock.lock{{.Name}}.RUnlock()

@@ -39,22 +39,10 @@ type GenericStore1Mock[T Key1, S any] struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Create holds details about calls to the Create method.
-		Create []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID T
-			// Value is the value argument value.
-			Value S
-		}
-		// Get holds details about calls to the Get method.
-		Get []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID T
-		}
+		// GenericStore1MockCreateCall holds details about calls to the Create method.
+		Create []GenericStore1MockCreateCall[T, S]
+		// GenericStore1MockGetCall holds details about calls to the Get method.
+		Get []GenericStore1MockGetCall[T, S]
 	}
 	lockCreate sync.RWMutex
 	lockGet    sync.RWMutex
@@ -65,11 +53,7 @@ func (mock *GenericStore1Mock[T, S]) Create(ctx context.Context, id T, value S) 
 	if mock.CreateFunc == nil {
 		panic("GenericStore1Mock.CreateFunc: method is nil but GenericStore1.Create was just called")
 	}
-	callInfo := struct {
-		Ctx   context.Context
-		ID    T
-		Value S
-	}{
+	callInfo := GenericStore1MockCreateCall[T, S]{
 		Ctx:   ctx,
 		ID:    id,
 		Value: value,
@@ -80,20 +64,22 @@ func (mock *GenericStore1Mock[T, S]) Create(ctx context.Context, id T, value S) 
 	return mock.CreateFunc(ctx, id, value)
 }
 
+// GenericStore1MockCreateCall holds details about calls to the Create method.
+type GenericStore1MockCreateCall[T Key1, S any] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID T
+	// Value is the value argument value.
+	Value S
+}
+
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
 //
 //	len(mockedGenericStore1.CreateCalls())
-func (mock *GenericStore1Mock[T, S]) CreateCalls() []struct {
-	Ctx   context.Context
-	ID    T
-	Value S
-} {
-	var calls []struct {
-		Ctx   context.Context
-		ID    T
-		Value S
-	}
+func (mock *GenericStore1Mock[T, S]) CreateCalls() []GenericStore1MockCreateCall[T, S] {
+	var calls []GenericStore1MockCreateCall[T, S]
 	mock.lockCreate.RLock()
 	calls = mock.calls.Create
 	mock.lockCreate.RUnlock()
@@ -105,10 +91,7 @@ func (mock *GenericStore1Mock[T, S]) Get(ctx context.Context, id T) (S, error) {
 	if mock.GetFunc == nil {
 		panic("GenericStore1Mock.GetFunc: method is nil but GenericStore1.Get was just called")
 	}
-	callInfo := struct {
-		Ctx context.Context
-		ID  T
-	}{
+	callInfo := GenericStore1MockGetCall[T, S]{
 		Ctx: ctx,
 		ID:  id,
 	}
@@ -118,18 +101,20 @@ func (mock *GenericStore1Mock[T, S]) Get(ctx context.Context, id T) (S, error) {
 	return mock.GetFunc(ctx, id)
 }
 
+// GenericStore1MockGetCall holds details about calls to the Get method.
+type GenericStore1MockGetCall[T Key1, S any] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID T
+}
+
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
 //
 //	len(mockedGenericStore1.GetCalls())
-func (mock *GenericStore1Mock[T, S]) GetCalls() []struct {
-	Ctx context.Context
-	ID  T
-} {
-	var calls []struct {
-		Ctx context.Context
-		ID  T
-	}
+func (mock *GenericStore1Mock[T, S]) GetCalls() []GenericStore1MockGetCall[T, S] {
+	var calls []GenericStore1MockGetCall[T, S]
 	mock.lockGet.RLock()
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()
@@ -167,22 +152,10 @@ type GenericStore2Mock[T Key2, S any] struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Create holds details about calls to the Create method.
-		Create []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID T
-			// Value is the value argument value.
-			Value S
-		}
-		// Get holds details about calls to the Get method.
-		Get []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID T
-		}
+		// GenericStore2MockCreateCall holds details about calls to the Create method.
+		Create []GenericStore2MockCreateCall[T, S]
+		// GenericStore2MockGetCall holds details about calls to the Get method.
+		Get []GenericStore2MockGetCall[T, S]
 	}
 	lockCreate sync.RWMutex
 	lockGet    sync.RWMutex
@@ -193,11 +166,7 @@ func (mock *GenericStore2Mock[T, S]) Create(ctx context.Context, id T, value S) 
 	if mock.CreateFunc == nil {
 		panic("GenericStore2Mock.CreateFunc: method is nil but GenericStore2.Create was just called")
 	}
-	callInfo := struct {
-		Ctx   context.Context
-		ID    T
-		Value S
-	}{
+	callInfo := GenericStore2MockCreateCall[T, S]{
 		Ctx:   ctx,
 		ID:    id,
 		Value: value,
@@ -208,20 +177,22 @@ func (mock *GenericStore2Mock[T, S]) Create(ctx context.Context, id T, value S) 
 	return mock.CreateFunc(ctx, id, value)
 }
 
+// GenericStore2MockCreateCall holds details about calls to the Create method.
+type GenericStore2MockCreateCall[T Key2, S any] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID T
+	// Value is the value argument value.
+	Value S
+}
+
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
 //
 //	len(mockedGenericStore2.CreateCalls())
-func (mock *GenericStore2Mock[T, S]) CreateCalls() []struct {
-	Ctx   context.Context
-	ID    T
-	Value S
-} {
-	var calls []struct {
-		Ctx   context.Context
-		ID    T
-		Value S
-	}
+func (mock *GenericStore2Mock[T, S]) CreateCalls() []GenericStore2MockCreateCall[T, S] {
+	var calls []GenericStore2MockCreateCall[T, S]
 	mock.lockCreate.RLock()
 	calls = mock.calls.Create
 	mock.lockCreate.RUnlock()
@@ -233,10 +204,7 @@ func (mock *GenericStore2Mock[T, S]) Get(ctx context.Context, id T) (S, error) {
 	if mock.GetFunc == nil {
 		panic("GenericStore2Mock.GetFunc: method is nil but GenericStore2.Get was just called")
 	}
-	callInfo := struct {
-		Ctx context.Context
-		ID  T
-	}{
+	callInfo := GenericStore2MockGetCall[T, S]{
 		Ctx: ctx,
 		ID:  id,
 	}
@@ -246,18 +214,20 @@ func (mock *GenericStore2Mock[T, S]) Get(ctx context.Context, id T) (S, error) {
 	return mock.GetFunc(ctx, id)
 }
 
+// GenericStore2MockGetCall holds details about calls to the Get method.
+type GenericStore2MockGetCall[T Key2, S any] struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID T
+}
+
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
 //
 //	len(mockedGenericStore2.GetCalls())
-func (mock *GenericStore2Mock[T, S]) GetCalls() []struct {
-	Ctx context.Context
-	ID  T
-} {
-	var calls []struct {
-		Ctx context.Context
-		ID  T
-	}
+func (mock *GenericStore2Mock[T, S]) GetCalls() []GenericStore2MockGetCall[T, S] {
+	var calls []GenericStore2MockGetCall[T, S]
 	mock.lockGet.RLock()
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()
@@ -295,22 +265,10 @@ type AliasStoreMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Create holds details about calls to the Create method.
-		Create []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID KeyImpl
-			// Value is the value argument value.
-			Value bool
-		}
-		// Get holds details about calls to the Get method.
-		Get []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ID is the id argument value.
-			ID KeyImpl
-		}
+		// AliasStoreMockCreateCall holds details about calls to the Create method.
+		Create []AliasStoreMockCreateCall
+		// AliasStoreMockGetCall holds details about calls to the Get method.
+		Get []AliasStoreMockGetCall
 	}
 	lockCreate sync.RWMutex
 	lockGet    sync.RWMutex
@@ -321,11 +279,7 @@ func (mock *AliasStoreMock) Create(ctx context.Context, id KeyImpl, value bool) 
 	if mock.CreateFunc == nil {
 		panic("AliasStoreMock.CreateFunc: method is nil but AliasStore.Create was just called")
 	}
-	callInfo := struct {
-		Ctx   context.Context
-		ID    KeyImpl
-		Value bool
-	}{
+	callInfo := AliasStoreMockCreateCall{
 		Ctx:   ctx,
 		ID:    id,
 		Value: value,
@@ -336,20 +290,22 @@ func (mock *AliasStoreMock) Create(ctx context.Context, id KeyImpl, value bool) 
 	return mock.CreateFunc(ctx, id, value)
 }
 
+// AliasStoreMockCreateCall holds details about calls to the Create method.
+type AliasStoreMockCreateCall struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID KeyImpl
+	// Value is the value argument value.
+	Value bool
+}
+
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
 //
 //	len(mockedAliasStore.CreateCalls())
-func (mock *AliasStoreMock) CreateCalls() []struct {
-	Ctx   context.Context
-	ID    KeyImpl
-	Value bool
-} {
-	var calls []struct {
-		Ctx   context.Context
-		ID    KeyImpl
-		Value bool
-	}
+func (mock *AliasStoreMock) CreateCalls() []AliasStoreMockCreateCall {
+	var calls []AliasStoreMockCreateCall
 	mock.lockCreate.RLock()
 	calls = mock.calls.Create
 	mock.lockCreate.RUnlock()
@@ -361,10 +317,7 @@ func (mock *AliasStoreMock) Get(ctx context.Context, id KeyImpl) (bool, error) {
 	if mock.GetFunc == nil {
 		panic("AliasStoreMock.GetFunc: method is nil but AliasStore.Get was just called")
 	}
-	callInfo := struct {
-		Ctx context.Context
-		ID  KeyImpl
-	}{
+	callInfo := AliasStoreMockGetCall{
 		Ctx: ctx,
 		ID:  id,
 	}
@@ -374,18 +327,20 @@ func (mock *AliasStoreMock) Get(ctx context.Context, id KeyImpl) (bool, error) {
 	return mock.GetFunc(ctx, id)
 }
 
+// AliasStoreMockGetCall holds details about calls to the Get method.
+type AliasStoreMockGetCall struct {
+	// Ctx is the ctx argument value.
+	Ctx context.Context
+	// ID is the id argument value.
+	ID KeyImpl
+}
+
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
 //
 //	len(mockedAliasStore.GetCalls())
-func (mock *AliasStoreMock) GetCalls() []struct {
-	Ctx context.Context
-	ID  KeyImpl
-} {
-	var calls []struct {
-		Ctx context.Context
-		ID  KeyImpl
-	}
+func (mock *AliasStoreMock) GetCalls() []AliasStoreMockGetCall {
+	var calls []AliasStoreMockGetCall
 	mock.lockGet.RLock()
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()

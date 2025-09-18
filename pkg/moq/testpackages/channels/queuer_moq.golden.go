@@ -38,16 +38,10 @@ type QueuerMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Sub holds details about calls to the Sub method.
-		Sub []struct {
-			// Topic is the topic argument value.
-			Topic string
-		}
-		// Unsub holds details about calls to the Unsub method.
-		Unsub []struct {
-			// Topic is the topic argument value.
-			Topic string
-		}
+		// QueuerMockSubCall holds details about calls to the Sub method.
+		Sub []QueuerMockSubCall
+		// QueuerMockUnsubCall holds details about calls to the Unsub method.
+		Unsub []QueuerMockUnsubCall
 	}
 	lockSub   sync.RWMutex
 	lockUnsub sync.RWMutex
@@ -55,9 +49,7 @@ type QueuerMock struct {
 
 // Sub calls SubFunc.
 func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error) {
-	callInfo := struct {
-		Topic string
-	}{
+	callInfo := QueuerMockSubCall{
 		Topic: topic,
 	}
 	mock.lockSub.Lock()
@@ -73,16 +65,18 @@ func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error) {
 	return mock.SubFunc(topic)
 }
 
+// QueuerMockSubCall holds details about calls to the Sub method.
+type QueuerMockSubCall struct {
+	// Topic is the topic argument value.
+	Topic string
+}
+
 // SubCalls gets all the calls that were made to Sub.
 // Check the length with:
 //
 //	len(mockedQueuer.SubCalls())
-func (mock *QueuerMock) SubCalls() []struct {
-	Topic string
-} {
-	var calls []struct {
-		Topic string
-	}
+func (mock *QueuerMock) SubCalls() []QueuerMockSubCall {
+	var calls []QueuerMockSubCall
 	mock.lockSub.RLock()
 	calls = mock.calls.Sub
 	mock.lockSub.RUnlock()
@@ -91,9 +85,7 @@ func (mock *QueuerMock) SubCalls() []struct {
 
 // Unsub calls UnsubFunc.
 func (mock *QueuerMock) Unsub(topic string) {
-	callInfo := struct {
-		Topic string
-	}{
+	callInfo := QueuerMockUnsubCall{
 		Topic: topic,
 	}
 	mock.lockUnsub.Lock()
@@ -105,16 +97,18 @@ func (mock *QueuerMock) Unsub(topic string) {
 	mock.UnsubFunc(topic)
 }
 
+// QueuerMockUnsubCall holds details about calls to the Unsub method.
+type QueuerMockUnsubCall struct {
+	// Topic is the topic argument value.
+	Topic string
+}
+
 // UnsubCalls gets all the calls that were made to Unsub.
 // Check the length with:
 //
 //	len(mockedQueuer.UnsubCalls())
-func (mock *QueuerMock) UnsubCalls() []struct {
-	Topic string
-} {
-	var calls []struct {
-		Topic string
-	}
+func (mock *QueuerMock) UnsubCalls() []QueuerMockUnsubCall {
+	var calls []QueuerMockUnsubCall
 	mock.lockUnsub.RLock()
 	calls = mock.calls.Unsub
 	mock.lockUnsub.RUnlock()

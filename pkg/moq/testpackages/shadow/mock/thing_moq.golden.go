@@ -34,13 +34,8 @@ type ThingMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Blah holds details about calls to the Blah method.
-		Blah []struct {
-			// W is the w argument value.
-			W nethttp.ResponseWriter
-			// R is the r argument value.
-			R *nethttp.Request
-		}
+		// ThingMockBlahCall holds details about calls to the Blah method.
+		Blah []ThingMockBlahCall
 	}
 	lockBlah sync.RWMutex
 }
@@ -50,10 +45,7 @@ func (mock *ThingMock) Blah(w nethttp.ResponseWriter, r *nethttp.Request) {
 	if mock.BlahFunc == nil {
 		panic("ThingMock.BlahFunc: method is nil but Thing.Blah was just called")
 	}
-	callInfo := struct {
-		W nethttp.ResponseWriter
-		R *nethttp.Request
-	}{
+	callInfo := ThingMockBlahCall{
 		W: w,
 		R: r,
 	}
@@ -63,18 +55,20 @@ func (mock *ThingMock) Blah(w nethttp.ResponseWriter, r *nethttp.Request) {
 	mock.BlahFunc(w, r)
 }
 
+// ThingMockBlahCall holds details about calls to the Blah method.
+type ThingMockBlahCall struct {
+	// W is the w argument value.
+	W nethttp.ResponseWriter
+	// R is the r argument value.
+	R *nethttp.Request
+}
+
 // BlahCalls gets all the calls that were made to Blah.
 // Check the length with:
 //
 //	len(mockedThing.BlahCalls())
-func (mock *ThingMock) BlahCalls() []struct {
-	W nethttp.ResponseWriter
-	R *nethttp.Request
-} {
-	var calls []struct {
-		W nethttp.ResponseWriter
-		R *nethttp.Request
-	}
+func (mock *ThingMock) BlahCalls() []ThingMockBlahCall {
+	var calls []ThingMockBlahCall
 	mock.lockBlah.RLock()
 	calls = mock.calls.Blah
 	mock.lockBlah.RUnlock()

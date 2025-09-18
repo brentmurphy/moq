@@ -33,11 +33,8 @@ type ServiceMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// DoSomething holds details about calls to the DoSomething method.
-		DoSomething []struct {
-			// SomeType is the someType argument value.
-			SomeType somerepo.SomeType
-		}
+		// ServiceMockDoSomethingCall holds details about calls to the DoSomething method.
+		DoSomething []ServiceMockDoSomethingCall
 	}
 	lockDoSomething sync.RWMutex
 }
@@ -47,9 +44,7 @@ func (mock *ServiceMock) DoSomething(someType somerepo.SomeType) error {
 	if mock.DoSomethingFunc == nil {
 		panic("ServiceMock.DoSomethingFunc: method is nil but Service.DoSomething was just called")
 	}
-	callInfo := struct {
-		SomeType somerepo.SomeType
-	}{
+	callInfo := ServiceMockDoSomethingCall{
 		SomeType: someType,
 	}
 	mock.lockDoSomething.Lock()
@@ -58,16 +53,18 @@ func (mock *ServiceMock) DoSomething(someType somerepo.SomeType) error {
 	return mock.DoSomethingFunc(someType)
 }
 
+// ServiceMockDoSomethingCall holds details about calls to the DoSomething method.
+type ServiceMockDoSomethingCall struct {
+	// SomeType is the someType argument value.
+	SomeType somerepo.SomeType
+}
+
 // DoSomethingCalls gets all the calls that were made to DoSomething.
 // Check the length with:
 //
 //	len(mockedService.DoSomethingCalls())
-func (mock *ServiceMock) DoSomethingCalls() []struct {
-	SomeType somerepo.SomeType
-} {
-	var calls []struct {
-		SomeType somerepo.SomeType
-	}
+func (mock *ServiceMock) DoSomethingCalls() []ServiceMockDoSomethingCall {
+	var calls []ServiceMockDoSomethingCall
 	mock.lockDoSomething.RLock()
 	calls = mock.calls.DoSomething
 	mock.lockDoSomething.RUnlock()

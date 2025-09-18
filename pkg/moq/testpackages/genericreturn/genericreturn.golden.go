@@ -33,9 +33,8 @@ type IFooBarMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Foobar holds details about calls to the Foobar method.
-		Foobar []struct {
-		}
+		// IFooBarMockFoobarCall holds details about calls to the Foobar method.
+		Foobar []IFooBarMockFoobarCall
 	}
 	lockFoobar sync.RWMutex
 }
@@ -45,22 +44,23 @@ func (mock *IFooBarMock) Foobar() GenericBar[otherpackage.Foo] {
 	if mock.FoobarFunc == nil {
 		panic("IFooBarMock.FoobarFunc: method is nil but IFooBar.Foobar was just called")
 	}
-	callInfo := struct {
-	}{}
+	callInfo := IFooBarMockFoobarCall{}
 	mock.lockFoobar.Lock()
 	mock.calls.Foobar = append(mock.calls.Foobar, callInfo)
 	mock.lockFoobar.Unlock()
 	return mock.FoobarFunc()
 }
 
+// IFooBarMockFoobarCall holds details about calls to the Foobar method.
+type IFooBarMockFoobarCall struct {
+}
+
 // FoobarCalls gets all the calls that were made to Foobar.
 // Check the length with:
 //
 //	len(mockedIFooBar.FoobarCalls())
-func (mock *IFooBarMock) FoobarCalls() []struct {
-} {
-	var calls []struct {
-	}
+func (mock *IFooBarMock) FoobarCalls() []IFooBarMockFoobarCall {
+	var calls []IFooBarMockFoobarCall
 	mock.lockFoobar.RLock()
 	calls = mock.calls.Foobar
 	mock.lockFoobar.RUnlock()
